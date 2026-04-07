@@ -1,0 +1,9 @@
+[package]
+name = "blinc-debug"
+version = "0.1.0"
+edition = "2024"
+description = "CLI for inspecting running Blinc applications via IPC"
+
+[dependencies]
+blinc-layout-inspector = { path = "../../lib/blinc-layout-inspector", features = ["server"] }
+clap = { version = "4", features = ["derive"] }
