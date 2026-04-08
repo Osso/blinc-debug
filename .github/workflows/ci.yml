@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_BUILD_TARGET: x86_64-unknown-linux-gnu
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: cli/blinc-debug
+
+      - uses: actions/checkout@v4
+        with:
+          repository: Osso/blinc-layout-inspector
+          path: lib/blinc-layout-inspector
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli/blinc-debug
+
+      - name: Check formatting
+        run: cargo fmt --check
+        working-directory: cli/blinc-debug
+
+      - name: Clippy
+        run: cargo clippy
+        working-directory: cli/blinc-debug
+
+      - name: Build
+        run: cargo build --release
+        working-directory: cli/blinc-debug
+
+      - name: Run tests
+        run: cargo test
+        working-directory: cli/blinc-debug
